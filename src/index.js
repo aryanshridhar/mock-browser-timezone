@@ -1,72 +1,75 @@
 const timezones = require('../static/timezones.json');
-const { isValid } = require('../lib/isValid');
+const { isValidDate } = require('../lib/isValidDate');
 
-function mockTimezone() {
-  const locale_properties = new Intl.DateTimeFormat().resolvedOptions();
-  const initial_formatted_properties = new Intl.DateTimeFormat([], {
+function MockTimezone() {
+  const localeProperites = new Intl.DateTimeFormat().resolvedOptions();
+  const formattedProperties = new Intl.DateTimeFormat([], {
     timeZoneName: 'short',
   }).formatToParts(new Date());
 
-  const valid_timezones = timezones.tz;
-  const valid_abbreviated_timezones = timezones.abbreviated_tz;
+  const validTimezones = timezones.tz;
+  const validAbbreviatedTimezones = timezones.abbreviated_tz;
 
-  this.register_timezone = function (timezone) {
-    if (!valid_timezones.includes(timezone)) {
+  this.registerTimezone = function (timezone) {
+    if (!validTimezones.includes(timezone)) {
       throw new Error('Invalid timezone detected.');
     }
     Intl.DateTimeFormat.prototype.resolvedOptions = function () {
-      const mocked_properties = {
-        ...locale_properties,
+      const mockedProperties = {
+        ...localeProperites,
         timeZone: timezone,
       };
-      return mocked_properties;
+      return mockedProperties;
     };
   };
 
-  this.register_abbreviated_timezone = function (time, abbreviated_timezone) {
-    if (!valid_abbreviated_timezones.includes(abbreviated_timezone)) {
+  this.registerAbbreviatedTimezone = function (
+    abbreviatedTimezone,
+    date = new Date()
+  ) {
+    if (!validAbbreviatedTimezones.includes(abbreviatedTimezone)) {
       throw new Error('Invalid abbreviated timezone detected.');
     }
 
-    if (!isValid(time)) {
-      throw new TypeError('Invalid type specified for time parameter.');
+    if (!isValidDate(date)) {
+      throw new TypeError('Invalid date specified.');
     }
-    const formatted_properties = new Intl.DateTimeFormat([], {
+
+    const mockedProperties = new Intl.DateTimeFormat([], {
       timeZoneName: 'short',
-    }).formatToParts(time);
+    }).formatToParts(new Date());
 
     Intl.DateTimeFormat.prototype.formatToParts = function () {
-      formatted_properties.forEach((locale) => {
-        if (locale.type === 'timeZoneName') {
-          locale.value = abbreviated_timezone;
+      mockedProperties.forEach((locale) => {
+        const localeObj = locale;
+        if (localeObj.type === 'timeZoneName') {
+          localeObj.value = abbreviatedTimezone;
         }
       });
-
-      return formatted_properties;
+      return mockedProperties;
     };
   };
 
   this.reset = function () {
     Intl.DateTimeFormat.prototype.resolvedOptions = function () {
-      return locale_properties;
+      return localeProperites;
     };
     Intl.DateTimeFormat.prototype.formatToParts = function () {
-      return initial_formatted_properties;
+      return formattedProperties;
     };
   };
 }
 
 (function () {
-  const mock_timezone = new mockTimezone();
+  const mockTz = new MockTimezone();
 
-  const register_timezone = mock_timezone.register_timezone;
-  const register_abbreviated_timezone =
-    mock_timezone.register_abbreviated_timezone;
-  const reset = mock_timezone.reset;
+  const { registerTimezone } = mockTz;
+  const { registerAbbreviatedTimezone } = mockTz;
+  const { reset } = mockTz;
 
   module.exports = {
-    register_timezone,
-    register_abbreviated_timezone,
+    registerTimezone,
+    registerAbbreviatedTimezone,
     reset,
   };
 })();
