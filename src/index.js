@@ -23,6 +23,8 @@ function MockTimezone() {
     };
   };
 
+  // Read https://stackoverflow.com/tags/timezone/info for more info regarding the ambiguity
+  // that can occur while determining the user's abbreviated timezone.
   this.registerAbbreviatedTimezone = function (
     abbreviatedTimezone,
     date = new Date()
@@ -35,17 +37,15 @@ function MockTimezone() {
       throw new TypeError('Invalid date specified.');
     }
 
-    const mockedProperties = new Intl.DateTimeFormat([], {
-      timeZoneName: 'short',
-    }).formatToParts(new Date());
-
     Intl.DateTimeFormat.prototype.formatToParts = function () {
-      mockedProperties.forEach((locale) => {
-        const localeObj = locale;
-        if (localeObj.type === 'timeZoneName') {
-          localeObj.value = abbreviatedTimezone;
-        }
-      });
+      const mockedTimezone = {
+        type: 'timeZoneName',
+        value: abbreviatedTimezone,
+      };
+      const mockedProperties = formattedProperties.filter(
+        (locale) => locale.type !== 'timeZoneName'
+      );
+      mockedProperties.push(mockedTimezone);
       return mockedProperties;
     };
   };

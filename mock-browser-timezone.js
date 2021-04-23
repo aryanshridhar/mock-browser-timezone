@@ -44,12 +44,10 @@ const {
 
   // Mocking the browser's abbreviated timezone.
 
-  console.log(1);
   registerAbbreviatedTimezone('CET');
 
   getAbbreviatedTimeZone(); // "CET"
 
-  console.log(2);
   registerAbbreviatedTimezone('PST');
 
   getAbbreviatedTimeZone(); // "PST"
