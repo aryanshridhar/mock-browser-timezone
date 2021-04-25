@@ -1,6 +1,6 @@
 {
   "name": "mock-browser-timezone",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Javascript library to mock the browser's timezone using ECMAScript Internationalization API. ",
   "main": "src/index.js",
   "scripts": {
