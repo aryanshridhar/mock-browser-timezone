@@ -8,6 +8,17 @@ Many modern browsers use the <a href = 'https://developer.mozilla.org/en-US/docs
 
 This library is specifically designed to mock the browser timezone, assisting to test the relevant code which uses the `Intl` API.
 
+### Installation
+
+##### Using npm:
+```
+npm install mock-browser-timezone --save-dev
+```
+
+##### Using yarn:
+```
+yarn add mock-browser-timezone -D
+```
 ### API
 
 <ul>
@@ -17,7 +28,7 @@ For a better read regarding the same: https://stackoverflow.com/tags/timezone/in
 <li><b>reset</b>: Used to bring back the mocked timezones to their original state.</li>
 </ul>
 
-### Usage:
+### Usage
 
 For a better implementation of `mock-browser-timezone`, have a look at <a href = 'https://github.com/aryanshridhar/mock-browser-timezone/blob/master/mock-browser-timezone.js'><code>mock-browser-timezone.js</code></a> file.
 
@@ -46,6 +57,6 @@ new Intl.DateTimeFormat([], {
 reset(); // Default back to the orginal abbreviated timezone value.
 ```
 
-### Supported Timezones:
+### Supported Timezones
 
 A list of supported IANA formatted timezones as well as abbreviated timezones can be found at <a href = 'https://github.com/aryanshridhar/mock-browser-timezone/blob/master/static/timezones.json'><code>timezones.json</code></a>.
